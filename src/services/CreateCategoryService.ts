@@ -11,7 +11,7 @@ interface IRequest{
  * [x] Acessar o repositorio
  */
 
-class CreateCategoryService{
+class CreateCategoryService {
     constructor( private categoriesRepository: CategoriesRepository){}
 
     execute({name, description}: IRequest ): void {
