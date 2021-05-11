@@ -1,7 +1,7 @@
 import csvParse from "csv-parse";
 import fs from "fs";
+
 import { ICategoriesRepository } from "../../repositories/ICategoriesRepository";
-import { CategoriesRepository } from "../../repositories/implementations/CategoriesRepository";
 
 interface IImportCategory {
     name: string;
@@ -11,7 +11,7 @@ interface IImportCategory {
 class ImportCategoryUseCase {
     constructor(private categoriesRepository: ICategoriesRepository) {}
 
-    loadCategories(file: any){
+    loadCategories(file: any) {
         return new Promise((resolve, reject) => {
             const categories: IImportCategory[] = [];
 
@@ -37,8 +37,20 @@ class ImportCategoryUseCase {
     }
 
     async execute(file: any) {
-        const category = await this.loadCategories(file);
-        console.log(category);
+        const categories = await this.loadCategories(file);
+        
+        categories.map(async (category) => {
+            const { name, description } = category;
+            
+            const existCategory = this.categoriesRepository.findByName(name);
+            
+            if (!existCategory){
+                this.categoriesRepository.create({
+                    name,
+                    description
+                });
+            }
+        });
     }
 }
 
